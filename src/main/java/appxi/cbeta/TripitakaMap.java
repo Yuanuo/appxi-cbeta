@@ -16,7 +16,7 @@ public class TripitakaMap {
         this.bookcase = bookcase;
     }
 
-    public Map<String, Tripitaka> getDataMap() {
+    public Map<String, Tripitaka> data() {
         if (null != this.data)
             return this.data;
 

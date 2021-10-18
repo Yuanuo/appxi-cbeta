@@ -25,7 +25,7 @@ public class BookMap {
 
     private final Object dataInit = new Object();
 
-    public Map<String, Book> getDataMap() {
+    public Map<String, Book> data() {
         if (null != this.data)
             return this.data;
         synchronized (dataInit) {
@@ -74,7 +74,7 @@ public class BookMap {
             book.title = name;
             book.authorInfo = author;
             book.catalog = catalog;
-            Tripitaka tripitaka = tripitakaMap.getDataMap().get(tripitakaId);
+            Tripitaka tripitaka = tripitakaMap.data().get(tripitakaId);
             if (null == tripitaka)
                 book.location = StringHelper.concat(catalog, "/", name);
             else book.location = StringHelper.concat(tripitaka.name, "/", catalog, "/", name);

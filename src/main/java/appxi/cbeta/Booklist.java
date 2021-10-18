@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Booklist<T> extends Attributes {
-    protected final BookMap books;
+    protected final BookMap bookMap;
     protected final T data;
     private final InputStream inputStream;
 
-    public Booklist(BookMap books, T data, InputStream inputStream) {
-        this.books = books;
+    public Booklist(BookMap bookMap, T data, InputStream inputStream) {
+        this.bookMap = bookMap;
         this.data = data;
         this.inputStream = inputStream;
         if (null == this.inputStream)
@@ -28,7 +28,7 @@ public abstract class Booklist<T> extends Attributes {
 
     private final Object dataInit = new Object();
 
-    public T getDataTree() {
+    public T tree() {
         if (this.hasAttr(dataInit))
             return this.data;
         synchronized (dataInit) {
@@ -71,25 +71,28 @@ public abstract class Booklist<T> extends Attributes {
             return treeItem;
         }
 
-        final Element linkEle = li.selectFirst("[href]");
+        final Element linkEle = li.selectFirst("> [href]");
         if (null == linkEle)
             return null;
         return parseTreeItem(linkEle);
     }
 
     private T parseTreeItem(Element item) {
+        if (!acceptDataItem(item)) return null;
         final String link = item.attr("href");
 
         Book book;
         if (link.isEmpty()) {
             book = new Book();
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
+        } else if (link.startsWith("toc/")) {
+            book = bookMap.data().get(item.attr("i"));
         } else if (link.startsWith("XML/")) {
             final String text = item.text();
             final String[] tmpArr = text.split("[ 　]", 2);
-            book = books.getDataMap().get(tmpArr[0]);
+            book = bookMap.data().get(tmpArr[0]);
             if (null == book && tmpArr[0].matches(".*[a-z]$")) {
-                book = books.getDataMap().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
+                book = bookMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
                 if (null != book) {
                     book.attr("cloned", true);
                     book = book.clone();
@@ -102,15 +105,17 @@ public abstract class Booklist<T> extends Attributes {
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link));
             book.title = item.text();
             book.path = link;
-            books.getDataMap().put(book.id, book);
+            bookMap.data().put(book.id, book);
         }
         if (null == book) return null;
-        // set visible
-        book.attr("v", !item.attrIs("v", "0"));
-        return this.createTreeItem(book);
+        return this.createTreeItem(item, book);
     }
 
-    protected abstract T createTreeItem(Book itemValue);
+    protected boolean acceptDataItem(Element item) {
+        return true;
+    }
+
+    protected abstract T createTreeItem(Element item, Book itemValue);
 
     protected abstract void relinkChildren(T parent, List<T> children);
 }
