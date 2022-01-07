@@ -34,8 +34,6 @@ public abstract class Booklist<T> extends Attributes {
         synchronized (dataInit) {
             if (this.hasAttr(dataInit))
                 return this.data;
-            this.attr(dataInit, true);
-            //
             try (InputStream stream = this.inputStream) {
                 final Document doc = Jsoup.parse(stream, StandardCharsets.UTF_8.name(), "/", Parser.xmlParser());
                 final Element nav = doc.body().selectFirst("nav");
@@ -46,6 +44,8 @@ public abstract class Booklist<T> extends Attributes {
             } finally {
                 System.gc();
             }
+            //
+            this.attr(dataInit, true);
         }
         return this.data;
     }
