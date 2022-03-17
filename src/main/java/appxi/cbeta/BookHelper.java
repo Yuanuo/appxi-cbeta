@@ -22,13 +22,33 @@ public abstract class BookHelper {
     private static final String REGEX_AUTHOR_M1 = ".*" + REGEX_AUTHOR_R1;
 
     public static void parseBookAuthorInfo(Book book) {
+        // 1，优先从预置的信息库中获取
+        BookInfo bookInfo = BookInfo.data.get(book.id);
+        if (null != bookInfo) {
+            book.title = bookInfo.title;
+            if (null != bookInfo.periods)
+                book.periods.addAll(Arrays.asList(bookInfo.periods));
+            if (null != bookInfo.authors)
+                book.authors.addAll(Arrays.asList(bookInfo.authors));
+        }
+        // 预置信息中至少有作译者信息时，不再动态解析更多信息
+        if (!book.authors.isEmpty()) return;
+
+        // 2，截取authorInfo
         String author = book.authorInfo;
         if (null == author || author.length() < 2)
             return;
-        if (author.contains("（"))
-            author = author.substring(0, author.indexOf("（"));
-        author = author.replaceAll("\\(.+?\\)", "");
-        book.authorInfo = author; // keep the full info
+        int idx = author.indexOf("（");
+        if (idx > 0)
+            author = author.substring(0, idx);
+        idx = author.indexOf('(');
+        if (idx > 0)
+            author = author.replaceAll("\\(.+?\\)", "");
+        book.authorInfo = author;
+        System.out.println(author);
+
+        // 3，使用原始方法获取信息（由于原始信息复杂无规则，此处获取到的数据可能不正确，但为兼容变更的新数据而保留此方法）
+        boolean parsePeriods = book.periods.isEmpty();
         //
         String[] tmpArr;
         String nameStr;
@@ -40,7 +60,7 @@ public abstract class BookHelper {
                     nameStr = str;
                 } else if (!StringHelper.indexOf(tmpArr[0], "德溥", "守詮", "嗣端")) {
                     if (tmpArr[0].length() < 3 || StringHelper.indexOf(tmpArr[0], "乞伏秦", "南北朝", "宇文周")) {
-                        book.periods.add(tmpArr[0]);
+                        if (parsePeriods) book.periods.add(tmpArr[0]);
                         nameStr = tmpArr[1];
                     }
                 }
