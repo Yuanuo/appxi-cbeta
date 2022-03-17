@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Book extends Attributes implements Serializable {
     public String id, title, path, tripitakaId, number;
-    public final Map<Integer, String> volumes = new HashMap<>();
+    public final Map<Short, String> volumes = new HashMap<>();
 
     public final Node<Chapter> chapters = new Node<>();
     //

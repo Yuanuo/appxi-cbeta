@@ -75,25 +75,25 @@ public abstract class ChapterTreeParser<T> {
         String[] nameInfo = linkPath.substring(linkPath.lastIndexOf("/") + 1, linkPath.lastIndexOf(".")).split("[n_]");
 
         String currSerial = nameInfo[0];
-        int currIdx = Integer.parseInt(nameInfo[2]);
+        short currIdx = Short.parseShort(nameInfo[2]);
 
         String prevSerial = ctx.attrStr("prevSerial");
-        int prevIdx = ctx.hasAttr("prevIdx") ? ctx.attr("prevIdx") : -1;
+        short prevIdx = ctx.hasAttr("prevIdx") ? ctx.attr("prevIdx") : -1;
 
         //
-        int fixFrom = -1;
+        short fixFrom = -1;
         if (null == prevSerial && currIdx > 1) {
             // start not from _001.xml, need fix
             fixFrom = 1;
         } else if (prevIdx != -1 && currIdx - prevIdx > 1) {
             // between curr and prev more than 1, need fix
-            fixFrom = prevIdx + 1;
+            fixFrom = (short) (prevIdx + 1);
         }
         // need fix
         if (fixFrom > -1) {
             String tmpLink = linkPath.substring(0, linkPath.lastIndexOf("_") + 1);
             String tmpIdx;
-            for (int i = fixFrom; i < currIdx; i++) {
+            for (short i = fixFrom; i < currIdx; i++) {
                 tmpIdx = StringHelper.concat(i < 10 ? "00" : (i < 100 ? "0" : null), i);
                 createTreeItem(parent, createChapter("title",
                         StringHelper.concat(nameInfo[0], "n", nameInfo[1], "_", tmpIdx),

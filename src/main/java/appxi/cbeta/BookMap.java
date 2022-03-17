@@ -52,17 +52,17 @@ public class BookMap {
             catalog = StringHelper.concat(catalog, "/", group);
         final String serial = arr[3].strip();
         final String number = arr[4].strip();
-        final int volsNum = Integer.parseInt(arr[5].strip());
+        final short volsNum = Short.parseShort(arr[5].strip());
         String name = arr[6].strip();
         final String author = arr[7].strip();
 
         // detect vol num from name
         final Matcher matcher = VOL_REGEX.matcher(name);
-        int startVolNum = 1, endVolNum = volsNum;
+        short startVolNum = 1, endVolNum = volsNum;
         if (matcher.matches()) {
             name = matcher.group(1);
-            startVolNum = Integer.parseInt(matcher.group(3));
-            endVolNum = Integer.parseInt(matcher.group(5));
+            startVolNum = Short.parseShort(matcher.group(3));
+            endVolNum = Short.parseShort(matcher.group(5));
         }
 
         //
@@ -83,6 +83,6 @@ public class BookMap {
             book.number = number;
             startVolNum = 1;
         }
-        for (int i = startVolNum; i <= endVolNum; i++) book.volumes.put(i, serial);
+        for (short i = startVolNum; i <= endVolNum; i++) book.volumes.put(i, serial);
     }
 }
