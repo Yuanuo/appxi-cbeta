@@ -34,7 +34,7 @@ public class VolumeXml2HtmlProcessor extends FilteredProcessor<Element> {
 
     @Override
     protected FilterResult handleHeadText(TextNode txt) {
-        final String str = txt.text().strip();
+        final String str = txt.text().trim();
         if (buff.hasAttr("nobody")) {
             buff.attr("data-t", buff.hasAttr("data-t")
                     ? buff.attr("data-t").concat(",").concat(str)

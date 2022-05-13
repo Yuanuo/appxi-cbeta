@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class VolumeDocumentEx extends VolumeDocument {
-    private static final String VERSION = "21.10.08.1";
+    private static final String VERSION = "22.04.29.2";
 
     public VolumeDocumentEx(Bookcase bookcase, Book book, String volume) {
         super(bookcase, book, volume);
