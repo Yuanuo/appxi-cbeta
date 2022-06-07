@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 import org.appxi.util.NumberHelper;
 import org.appxi.util.StringHelper;

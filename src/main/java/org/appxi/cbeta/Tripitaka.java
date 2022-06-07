@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 public class Tripitaka {
     public final String id;

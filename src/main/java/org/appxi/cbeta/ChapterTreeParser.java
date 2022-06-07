@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 import org.appxi.holder.BoolHolder;
 import org.appxi.util.DigestHelper;

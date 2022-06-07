@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 import org.appxi.util.DigestHelper;
 import org.appxi.util.ext.Attributes;

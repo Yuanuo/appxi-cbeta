@@ -1,6 +1,6 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
-import appxi.cbeta.xml.ElementVisitor;
+import org.appxi.cbeta.xml.ElementVisitor;
 import org.appxi.util.DigestHelper;
 import org.appxi.util.StringHelper;
 import org.jsoup.nodes.Element;

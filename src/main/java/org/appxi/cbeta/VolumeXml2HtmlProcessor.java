@@ -1,7 +1,7 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
-import appxi.cbeta.xml.FilteredProcessor;
-import appxi.cbeta.xml.LinkedXmlFilter;
+import org.appxi.cbeta.xml.FilteredProcessor;
+import org.appxi.cbeta.xml.LinkedXmlFilter;
 import org.appxi.util.NumberHelper;
 import org.appxi.util.StringHelper;
 import org.jsoup.Jsoup;

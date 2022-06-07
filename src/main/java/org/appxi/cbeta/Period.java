@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 public enum Period {
     東漢("東漢", 25, 220),

@@ -1,8 +1,8 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
-import appxi.cbeta.xml.ElementVisitor;
-import appxi.cbeta.xml.LinkedTxtFilter;
-import appxi.cbeta.xml.LinkedXmlFilter;
+import org.appxi.cbeta.xml.ElementVisitor;
+import org.appxi.cbeta.xml.LinkedTxtFilter;
+import org.appxi.cbeta.xml.LinkedXmlFilter;
 import org.appxi.util.DigestHelper;
 import org.appxi.util.FileHelper;
 import org.appxi.util.StringHelper;

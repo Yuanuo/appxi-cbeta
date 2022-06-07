@@ -1,4 +1,4 @@
-package appxi.cbeta.xml;
+package org.appxi.cbeta.xml;
 
 import org.appxi.util.StringHelper;
 import org.jsoup.nodes.Comment;

@@ -1,7 +1,7 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
-import appxi.cbeta.xml.LinkedTxtFilter;
-import appxi.cbeta.xml.LinkedXmlFilter;
+import org.appxi.cbeta.xml.LinkedTxtFilter;
+import org.appxi.cbeta.xml.LinkedXmlFilter;
 import org.appxi.util.ext.HanLang;
 import org.appxi.util.ext.Node;
 import org.jsoup.nodes.Element;

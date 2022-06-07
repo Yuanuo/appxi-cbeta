@@ -1,4 +1,4 @@
-package appxi.cbeta;
+package org.appxi.cbeta;
 
 import org.appxi.prefs.UserPrefs;
 import org.appxi.util.FileHelper;

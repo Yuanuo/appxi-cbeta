@@ -1,4 +1,4 @@
-package appxi.cbeta.xml;
+package org.appxi.cbeta.xml;
 
 import org.jsoup.nodes.Element;
 
