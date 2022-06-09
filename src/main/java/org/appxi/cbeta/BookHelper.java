@@ -11,8 +11,11 @@ import org.xml.sax.Attributes;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class BookHelper {
+    public static final Pattern P_VOL = Pattern.compile(".*_(\\d+)\\.xml");
     private static final String REGEX_AUTHOR_R2 = "(並序|主編|會編|彙輯|刪定|刪合|校定|重刻|重編|編錄|記錄|整理|御製|合校|校訂|增修|脩定|編訂|續修|摘要|定本|追擬|譯註|撰輯|排定|" +
             "校勘|校釋|校注|校註|編次|編註|編纂|編集|手錄|撰述|重訂|重校|續集|纂集|纂補|纂輯|譯纂|釋論|原詩|譯經|編目|編閱|請啟|編緝|御選|纂閱|錄存|錄出|證義|解義|演義|造本論|標註|口述|" +
             "造頌|譯釋|譯講|科攝|譯述|譯漢|口譯|筆錄|述疏|繪圖|集證|重修|編修|註釋|提唱|譯英|集註|科註|詮註|改寫|詮次|參閱|並註|略註|補註|纂註|評註|宗通|造論|譯抄之|等編訂|等編|重輯并)$";
@@ -235,5 +238,14 @@ public abstract class BookHelper {
                 chapter.id = book.id + "-" + DigestHelper.uid();
             }
         });
+    }
+
+    public static short getVolume(Chapter chapter) {
+        if (null != chapter && null != chapter.path) {
+            Matcher matcher = P_VOL.matcher(chapter.path);
+            if (matcher.matches())
+                return Short.parseShort(matcher.group(1));
+        }
+        return 0;
     }
 }
