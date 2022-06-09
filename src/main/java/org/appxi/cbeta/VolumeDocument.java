@@ -15,9 +15,8 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.NodeTraversor;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -170,27 +169,7 @@ public class VolumeDocument {
         final StringBuilder buf = new StringBuilder();
         buf.append("<!DOCTYPE html><html lang=\"").append(hanLang.lang).append("\"><head><meta charset=\"UTF-8\">");
         //
-        final List<String> scripts = new ArrayList<>(), styles = new ArrayList<>();
-        for (String include : includes) {
-            if (include.endsWith(".js")) {
-                buf.append("\r\n<script type=\"text/javascript\" src=\"").append(include).append("\"></script>");
-            } else if (include.endsWith(".css")) {
-                buf.append("\r\n<link rel=\"stylesheet\" href=\"").append(include).append("\"/>");
-            } else if (include.startsWith("<script") || include.startsWith("<style")
-                    || include.startsWith("<link") || include.startsWith("<meta")) {
-                buf.append("\r\n").append(include);
-            } else if (include.startsWith("var ") || include.startsWith("function")) {
-                scripts.add(include);
-            } else {
-                styles.add(include);
-            }
-        }
-        if (!scripts.isEmpty()) {
-            buf.append("\r\n<script type=\"text/javascript\">").append(StringHelper.joinLines(scripts)).append("</script>");
-        }
-        if (!styles.isEmpty()) {
-            buf.append("\r\n<style type=\"text/css\">").append(StringHelper.joinLines(styles)).append("</style>");
-        }
+        StringHelper.buildWebIncludes(buf, Arrays.asList(includes));
         //
         buf.append("</head>");
         final Element body = isXmlVolume() ? this.getStandardHtml() : getDocumentBody();
