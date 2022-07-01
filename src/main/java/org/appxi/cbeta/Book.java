@@ -46,7 +46,7 @@ public class Book extends Attributes implements Serializable {
         return this.title;
     }
 
-    protected Book clone() {
+    public Book clone() {
         Book book = new Book();
         this.copyTo(book);
         return book;
