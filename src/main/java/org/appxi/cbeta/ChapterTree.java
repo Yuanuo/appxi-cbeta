@@ -1,9 +1,9 @@
 package org.appxi.cbeta;
 
+import org.appxi.book.Chapter;
 import org.appxi.util.ext.Node;
 
 import java.util.Comparator;
-import java.util.function.Supplier;
 
 public class ChapterTree extends ChapterTreeParser<Node<Chapter>> {
     private static final Object AK_PARSED = new Object();
@@ -39,30 +39,19 @@ public class ChapterTree extends ChapterTreeParser<Node<Chapter>> {
     private static Node<Chapter> getOrAddTocChapters(Book book) {
         Node<Chapter> chapters = book.chapters.findFirst(node -> "tocs".equals(node.value.id));
         if (null == chapters)
-            chapters = book.chapters.add(new Chapter().setId("tocs").setType("title").setTitle("章节目录"));
+            chapters = book.chapters.add(book.ofChapter().setId("tocs").setType("title").setTitle("章节目录"));
         return chapters;
     }
 
     private static Node<Chapter> getOrAddVolChapters(Book book) {
         Node<Chapter> chapters = book.chapters.findFirst(node -> "vols".equals(node.value.id));
         if (null == chapters)
-            chapters = book.chapters.add(new Chapter().setId("vols").setType("title").setTitle("卷次目录"));
+            chapters = book.chapters.add(book.ofChapter().setId("vols").setType("title").setTitle("卷次目录"));
         return chapters;
     }
 
     public static ChapterTree getOrInitBookChapters(Bookcase bookcase, Book book) {
-        return getOrInitBookChapters(bookcase, book, null);
-    }
-
-    public static ChapterTree getOrInitBookChapters(Bookcase bookcase, Book book, Supplier<Chapter> chapterSupplier) {
-        ChapterTree tree = null == chapterSupplier
-                ? new ChapterTree(bookcase, book)
-                : new ChapterTree(bookcase, book) {
-            @Override
-            protected Chapter createChapter() {
-                return chapterSupplier.get();
-            }
-        };
+        ChapterTree tree = new ChapterTree(bookcase, book);
         tree.getTocChapters();
         return tree;
     }

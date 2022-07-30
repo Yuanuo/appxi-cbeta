@@ -79,7 +79,7 @@ public class BookMap {
                 book.location = StringHelper.concat(catalog, "/", name);
             else book.location = StringHelper.concat(tripitaka.name, "/", catalog, "/", name);
             book.path = StringHelper.concat("toc/", tripitakaId, "/", bookId, ".xml");
-            book.tripitakaId = tripitakaId;
+            book.library = tripitakaId;
             book.number = number;
             startVolNum = 1;
         }

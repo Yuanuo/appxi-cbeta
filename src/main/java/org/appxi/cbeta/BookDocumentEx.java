@@ -1,5 +1,6 @@
 package org.appxi.cbeta;
 
+import org.appxi.book.Chapter;
 import org.appxi.prefs.UserPrefs;
 import org.appxi.util.FileHelper;
 import org.appxi.util.ext.Node;

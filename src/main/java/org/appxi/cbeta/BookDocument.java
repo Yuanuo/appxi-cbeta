@@ -1,5 +1,6 @@
 package org.appxi.cbeta;
 
+import org.appxi.book.Chapter;
 import org.appxi.cbeta.xml.LinkedTxtFilter;
 import org.appxi.cbeta.xml.LinkedXmlFilter;
 import org.appxi.util.ext.HanLang;

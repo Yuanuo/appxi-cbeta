@@ -1,5 +1,6 @@
 package org.appxi.cbeta;
 
+import org.appxi.book.Chapter;
 import org.appxi.holder.BoolHolder;
 import org.appxi.util.DigestHelper;
 import org.appxi.util.NumberHelper;
@@ -63,7 +64,11 @@ public abstract class ChapterTreeParser<T> {
             ctxVolumes.stream().sorted().forEach(vol -> initVolChapterAndFixSequence(book, volChapters, vol, ctx));
             fixVolChapters();
         } else {
-            createTreeItem(tocChapters, createChapter().setId(StringHelper.concat(book.id, "-1")).setType("article").setTitle(book.title).setPath(book.path));
+            createTreeItem(tocChapters, book.ofChapter()
+                    .setId(StringHelper.concat(book.id, "-1"))
+                    .setType("article")
+                    .setTitle(book.title)
+                    .setPath(book.path));
         }
         onceParsed = true;
         if (null != markParsedKey)
@@ -114,12 +119,8 @@ public abstract class ChapterTreeParser<T> {
         ctx.attr("prevIdx", currIdx);
     }
 
-    protected Chapter createChapter() {
-        return new Chapter();
-    }
-
     private Chapter createChapter(String type, String id, String title, String path, String start) {
-        Chapter chapter = createChapter();
+        Chapter chapter = book.ofChapter();
         chapter.type = type;
         chapter.id = id;
         chapter.title = title;
@@ -164,8 +165,8 @@ public abstract class ChapterTreeParser<T> {
         // start fix vols in chapters
         final BoolHolder holdChanged = new BoolHolder(false);
         book.volumes.forEach((volIdx, volSerial) -> {
-            String baseVolId = StringHelper.concat(book.tripitakaId, volSerial, "n", book.number, "_");
-            String baseVolPath = StringHelper.concat("XML/", book.tripitakaId, "/", book.tripitakaId, volSerial, "/");
+            String baseVolId = StringHelper.concat(book.library, volSerial, "n", book.number, "_");
+            String baseVolPath = StringHelper.concat("XML/", book.library, "/", book.library, volSerial, "/");
 
             //
             String volId = StringHelper.concat(baseVolId, volIdx < 10 ? "00" : (volIdx < 100 ? "0" : null), volIdx);
