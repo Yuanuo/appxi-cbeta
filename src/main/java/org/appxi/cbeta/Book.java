@@ -1,11 +1,11 @@
 package org.appxi.cbeta;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Book extends org.appxi.book.Book {
     public String number;
-    public final Map<Short, String> volumes = new HashMap<>();
+    public final Map<Short, String> volumes = new LinkedHashMap<>();
     //
     private static final Object AK_AUTHORS = new Object();
 
@@ -22,10 +22,13 @@ public class Book extends org.appxi.book.Book {
         return (Book) super.clone();
     }
 
-    public void copyTo(Book book) {
+    @Override
+    public void copyTo(org.appxi.book.Book book) {
         super.copyTo(book);
-        book.number = this.number;
-        book.volumes.putAll(this.volumes);
+        if (book instanceof Book bookEx) {
+            bookEx.number = this.number;
+            bookEx.volumes.putAll(this.volumes);
+        }
     }
 
     @Override
