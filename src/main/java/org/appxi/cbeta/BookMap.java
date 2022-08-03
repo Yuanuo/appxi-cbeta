@@ -19,6 +19,10 @@ public class BookMap {
         this.tripitakaMap = tripitakaMap;
     }
 
+    public Book ofBook() {
+        return new Book();
+    }
+
     public boolean isEmpty() {
         return null == this.data || this.data.isEmpty();
     }
@@ -69,7 +73,7 @@ public class BookMap {
         final String bookId = StringHelper.concat(tripitakaId, number);
         Book book = data.get(bookId);
         if (null == book) {
-            data.put(bookId, book = new Book());
+            data.put(bookId, book = ofBook());
             book.id = bookId;
             book.title = name;
             book.authorInfo = author;

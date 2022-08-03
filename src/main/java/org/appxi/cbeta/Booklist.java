@@ -83,7 +83,7 @@ public abstract class Booklist<T> extends Attributes {
 
         Book book;
         if (link.isEmpty()) {
-            book = new Book();
+            book = bookMap.ofBook();
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
         } else if (link.startsWith("toc/")) {
             book = bookMap.data().get(item.attr("i"));
@@ -101,7 +101,7 @@ public abstract class Booklist<T> extends Attributes {
                 }
             }
         } else {
-            book = new Book();
+            book = bookMap.ofBook();
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link));
             book.title = item.text();
             book.path = link;
