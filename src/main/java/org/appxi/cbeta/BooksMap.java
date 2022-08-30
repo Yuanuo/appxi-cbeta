@@ -1,5 +1,6 @@
 package org.appxi.cbeta;
 
+import org.appxi.holder.BoolHolder;
 import org.appxi.util.FileHelper;
 import org.appxi.util.StringHelper;
 
@@ -8,13 +9,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BookMap {
+public class BooksMap {
     private static final Pattern VOL_REGEX = Pattern.compile("(.*)(\\(第)(\\d+)(卷-第)(\\d+)(卷.*)");
     public final Bookcase bookcase;
     public final TripitakaMap tripitakaMap;
     private Map<String, Book> data;
 
-    public BookMap(TripitakaMap tripitakaMap) {
+    public BooksMap(TripitakaMap tripitakaMap) {
         this.bookcase = tripitakaMap.bookcase;
         this.tripitakaMap = tripitakaMap;
     }
@@ -27,13 +28,13 @@ public class BookMap {
         return null == this.data || this.data.isEmpty();
     }
 
-    private final Object dataInit = new Object();
+    private final BoolHolder dataInit = new BoolHolder();
 
     public Map<String, Book> data() {
-        if (null != this.data)
+        if (dataInit.value)
             return this.data;
         synchronized (dataInit) {
-            if (null != this.data)
+            if (dataInit.value)
                 return this.data;
             this.data = new HashMap<>(5120);
             try {
@@ -43,6 +44,8 @@ public class BookMap {
             } finally {
                 System.gc();
             }
+            //
+            dataInit.value = true;
         }
         return this.data;
     }

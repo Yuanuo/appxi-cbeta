@@ -1,7 +1,7 @@
 package org.appxi.cbeta;
 
+import org.appxi.holder.BoolHolder;
 import org.appxi.util.DigestHelper;
-import org.appxi.util.ext.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,29 +12,28 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public abstract class Booklist<T> extends Attributes {
-    protected final BookMap bookMap;
+public abstract class BooksList<T> {
+    protected final BooksMap booksMap;
     protected final T data;
-    private final InputStream inputStream;
+    private final InputStream closableInputStream;
 
-    public Booklist(BookMap bookMap, T data, InputStream inputStream) {
-        this.bookMap = bookMap;
+    public BooksList(BooksMap booksMap, T data, InputStream closableInputStream) {
+        this.booksMap = booksMap;
         this.data = data;
-        this.inputStream = inputStream;
-        if (null == this.inputStream)
-            throw new RuntimeException();
+        this.closableInputStream = Objects.requireNonNull(closableInputStream);
     }
 
-    private final Object dataInit = new Object();
+    private final BoolHolder dataInit = new BoolHolder();
 
     public T tree() {
-        if (this.hasAttr(dataInit))
+        if (dataInit.value)
             return this.data;
         synchronized (dataInit) {
-            if (this.hasAttr(dataInit))
+            if (dataInit.value)
                 return this.data;
-            try (InputStream stream = this.inputStream) {
+            try (InputStream stream = this.closableInputStream) {
                 final Document doc = Jsoup.parse(stream, StandardCharsets.UTF_8.name(), "/", Parser.xmlParser());
                 final Element nav = doc.body().selectFirst("nav");
                 if (null != nav)
@@ -45,7 +44,7 @@ public abstract class Booklist<T> extends Attributes {
                 System.gc();
             }
             //
-            this.attr(dataInit, true);
+            dataInit.value = true;
         }
         return this.data;
     }
@@ -83,16 +82,16 @@ public abstract class Booklist<T> extends Attributes {
 
         Book book;
         if (link.isEmpty()) {
-            book = bookMap.ofBook();
+            book = booksMap.ofBook();
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
         } else if (link.startsWith("toc/")) {
-            book = bookMap.data().get(item.attr("i"));
+            book = booksMap.data().get(item.attr("i"));
         } else if (link.startsWith("XML/")) {
             final String text = item.text();
             final String[] tmpArr = text.split("[ 　]", 2);
-            book = bookMap.data().get(tmpArr[0]);
+            book = booksMap.data().get(tmpArr[0]);
             if (null == book && tmpArr[0].matches(".*[a-z]$")) {
-                book = bookMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
+                book = booksMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
                 if (null != book) {
                     book.attr("cloned", true);
                     book = book.clone();
@@ -101,11 +100,11 @@ public abstract class Booklist<T> extends Attributes {
                 }
             }
         } else {
-            book = bookMap.ofBook();
+            book = booksMap.ofBook();
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link));
             book.title = item.text();
             book.path = link;
-            bookMap.data().put(book.id, book);
+            booksMap.data().put(book.id, book);
         }
         if (null == book) return null;
         return this.createTreeItem(item, book);
