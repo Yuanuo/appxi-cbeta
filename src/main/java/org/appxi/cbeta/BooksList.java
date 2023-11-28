@@ -99,6 +99,14 @@ public abstract class BooksList<T> {
                     book.attr("start", link);
                 }
             }
+        } else if (link.startsWith("a/")) {
+            book = booksMap.ofBook();
+            book.id = item.attrOr("i", () -> link.substring(link.lastIndexOf('/') + 1, link.lastIndexOf('.')));
+            book.title = item.text();
+            book.path = link;
+            book.authorInfo = item.attr("a");
+            book.library = link.substring(2, link.indexOf('/', 2));
+            booksMap.data().put(book.id, book);
         } else {
             book = booksMap.ofBook();
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link));

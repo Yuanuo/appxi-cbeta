@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class VolumeDocumentEx extends VolumeDocument {
-    private static final String VERSION = "22.04.29.2";
+    private static final String VERSION = "23.11.30.3";
 
     public VolumeDocumentEx(Bookcase bookcase, Book book, String volume) {
         super(bookcase, book, volume);
@@ -39,8 +39,8 @@ public class VolumeDocumentEx extends VolumeDocument {
         cacheInfo.append(StringHelper.join("|", includes));
         //
         final Path cacheFile = UserPrefs.cacheDir().resolve(FileHelper.makeEncodedPath(cacheInfo.toString(), ".html"));
-        //
-        if (Files.notExists(cacheFile)) {
+        // FIXME 针对 a/ 目录中的扩展数据需要每次读取源文档以提取 head[meta] 信息
+        if (Files.notExists(cacheFile) || volume.startsWith("a/")) {
             final String stdHtmlDoc = super.toStandardHtmlDocument(hanLang, bodyWrapper, includes);
             final boolean success = FileHelper.writeString(stdHtmlDoc, cacheFile);
             if (success) {
