@@ -3,6 +3,7 @@ package org.appxi.cbeta;
 import org.appxi.cbeta.xml.ElementVisitor;
 import org.appxi.cbeta.xml.LinkedTxtFilter;
 import org.appxi.cbeta.xml.LinkedXmlFilter;
+import org.appxi.prefs.UserPrefs;
 import org.appxi.util.DigestHelper;
 import org.appxi.util.FileHelper;
 import org.appxi.util.StringHelper;
@@ -15,6 +16,7 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.NodeTraversor;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.function.Function;
@@ -173,7 +175,7 @@ public class VolumeDocument {
         //
         buf.append("</head>");
         final Element body = isXmlVolume() ? this.getStandardHtml() : getDocumentBody();
-        tryEmbedExternalResources(body);
+        tryExtractExternalResources(body);
         if (null == bodyWrapper) {
             buf.append(body.outerHtml());
         } else {
@@ -213,6 +215,32 @@ public class VolumeDocument {
                         i.printStackTrace();
                     }
                 }
+            }
+        });
+    }
+
+    private void tryExtractExternalResources(Element body) {
+        body.traverse(new ElementVisitor() {
+            @Override
+            protected void head(Element ele, int depth) {
+                if (!ele.is("img") || !ele.hasAttr("src")) {
+                    return;
+                }
+                String src = ele.attr("src");
+                if (src.startsWith("../")) {
+                    src = src.substring(3);
+                } else {
+                    src = volume.substring(0, volume.lastIndexOf('/') + 1).concat(src);
+                }
+                src = src.replace("//", "/");
+                //
+                final Path imgFile = FileHelper.extractFile(
+                        bookcase::getContentAsStream,
+                        f -> UserPrefs.cacheDir().resolve(f),
+                        src
+                );
+                final Path imgPath = UserPrefs.cacheDir().relativize(imgFile);
+                ele.attr("src", "../../" + imgPath.toString().replace('\\', '/'));
             }
         });
     }
