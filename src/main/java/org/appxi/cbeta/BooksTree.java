@@ -16,13 +16,13 @@ import java.util.List;
 
 public class BooksTree {
     protected static final Object AK_ELEMENT = new Object();
-    public final BooksMap booksMap;
+    public final BookMap bookMap;
     protected final String navType;
 
     protected Element navElement;
 
-    public BooksTree(BooksMap booksMap, String navType) {
-        this.booksMap = booksMap;
+    public BooksTree(BookMap bookMap, String navType) {
+        this.bookMap = bookMap;
         this.navType = navType;
     }
 
@@ -31,12 +31,12 @@ public class BooksTree {
             return this.navElement;
         }
         final String navFileOrig = navType + "_nav.xhtml";
-        final long navFileOrigTime = booksMap.bookcase.getLastModifiedTime(navFileOrig);
+        final long navFileOrigTime = bookMap.bookcase.getLastModifiedTime(navFileOrig);
         final Path navFileTemp = UserPrefs.cacheDir().resolve(navFileOrig);
         final long navFileTempTime = FileHelper.fileTime(navFileTemp);
 
 
-        try (InputStream stream = this.booksMap.bookcase.getContentAsStream(navType + "_nav.xhtml")) {
+        try (InputStream stream = this.bookMap.bookcase.getContentAsStream(navType + "_nav.xhtml")) {
             this.navElement = Jsoup.parse(stream, StandardCharsets.UTF_8.name(), "/", Parser.xmlParser())
                     .body()
                     .selectFirst("nav");
@@ -89,19 +89,19 @@ public class BooksTree {
 
         Book book;
         if (link.isEmpty()) {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             book.title = element.attr("t");
             if (book.title.isEmpty()) {
                 book.title = BookHelper.parseNavCatalogInfo(element.text());
             }
         } else if (link.startsWith("toc/")) {
-            book = booksMap.data().get(element.attr("i"));
+            book = bookMap.data().get(element.attr("i"));
         } else if (link.startsWith("XML/")) {
             final String text = element.text();
             final String[] tmpArr = text.split("[ 　]", 2);
-            book = booksMap.data().get(tmpArr[0]);
+            book = bookMap.data().get(tmpArr[0]);
             if (null == book && tmpArr[0].matches(".*[a-z]$")) {
-                book = booksMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
+                book = bookMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
                 if (null != book) {
                     book.attr("cloned", true);
                     book = book.clone();
@@ -110,11 +110,11 @@ public class BooksTree {
                 }
             }
         } else {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             book.id = element.attrOr("i", () -> DigestHelper.crc32c(link));
             book.title = element.text();
             book.path = link;
-            booksMap.data().put(book.id, book);
+            bookMap.data().put(book.id, book);
         }
         //
         if (book != null) {

@@ -239,6 +239,9 @@ public class VolumeDocument {
                         f -> UserPrefs.cacheDir().resolve(f),
                         src
                 );
+                if (null == imgFile) {
+                    return;
+                }
                 final Path imgPath = UserPrefs.cacheDir().relativize(imgFile);
                 ele.attr("src", "../../" + imgPath.toString().replace('\\', '/'));
             }

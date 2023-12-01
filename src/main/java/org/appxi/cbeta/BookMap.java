@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BooksMap {
+public class BookMap {
     private static final Pattern VOL_REGEX = Pattern.compile("(.*)(\\(第)(\\d+)(卷-第)(\\d+)(卷.*)");
     public final Bookcase bookcase;
     public final TripitakaMap tripitakaMap;
     private Map<String, Book> data;
 
-    public BooksMap(TripitakaMap tripitakaMap) {
+    public BookMap(TripitakaMap tripitakaMap) {
         this.bookcase = tripitakaMap.bookcase;
         this.tripitakaMap = tripitakaMap;
     }

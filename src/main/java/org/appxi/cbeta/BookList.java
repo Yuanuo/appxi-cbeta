@@ -2,6 +2,7 @@ package org.appxi.cbeta;
 
 import org.appxi.holder.BoolHolder;
 import org.appxi.util.DigestHelper;
+import org.appxi.util.ext.HanLang;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,15 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class BooksList<T> {
-    protected final BooksMap booksMap;
+public abstract class BookList<T> {
+    protected final BookMap booksMap;
     protected final T data;
     private final InputStream closableInputStream;
 
-    public BooksList(BooksMap booksMap, T data, InputStream closableInputStream) {
-        this.booksMap = booksMap;
+    private HanLang hanLang = HanLang.hantTW;
+
+    public BookList(BookMap bookMap, T data, InputStream closableInputStream) {
+        this.booksMap = bookMap;
         this.data = data;
         this.closableInputStream = Objects.requireNonNull(closableInputStream);
+    }
+
+    public final HanLang getHanLang() {
+        return hanLang;
     }
 
     private final BoolHolder dataInit = new BoolHolder();
@@ -36,8 +43,10 @@ public abstract class BooksList<T> {
             try (InputStream stream = this.closableInputStream) {
                 final Document doc = Jsoup.parse(stream, StandardCharsets.UTF_8.name(), "/", Parser.xmlParser());
                 final Element nav = doc.body().selectFirst("nav");
-                if (null != nav)
+                if (null != nav) {
+                    this.hanLang = HanLang.valueBy(nav.attrOr("han-lang", "zh-tw"));
                     walkAndParseTreeItems(data, nav.select(":root, :root > li"));
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             } finally {
@@ -83,6 +92,7 @@ public abstract class BooksList<T> {
         Book book;
         if (link.isEmpty()) {
             book = booksMap.ofBook();
+            book.id = item.attrOr("i", (String) null);
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
         } else if (link.startsWith("toc/")) {
             book = booksMap.data().get(item.attr("i"));

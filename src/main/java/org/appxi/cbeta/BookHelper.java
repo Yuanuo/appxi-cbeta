@@ -49,7 +49,6 @@ public abstract class BookHelper {
         if (idx > 0)
             author = author.replaceAll("\\(.+?\\)", "");
         book.authorInfo = author;
-        System.out.println(author);
 
         // 3，使用原始方法获取信息（由于原始信息复杂无规则，此处获取到的数据可能不正确，但为兼容变更的新数据而保留此方法）
         boolean parsePeriods = book.periods.isEmpty();
