@@ -51,7 +51,7 @@ public class ProfileManager {
                     final String filename = navlink.attr("href");
                     final String id = filename.substring(0, filename.length() - 10); // 10 for "_nav.xhtml"
                     final String repo = StringHelper.indexOf(id, "bulei", "simple", "advance") ? ".profile0" : (".profile." + id);
-                    profiles.add(new Profile.InternalProfile(id, "预置书单：" + navlink.text(), "", version, workspace.resolve(repo), filename));
+                    profiles.add(new Profile.InternalProfile(id, navlink.text(), "", version, workspace.resolve(repo), filename));
                 }
                 //
                 defaultProfileId = nav.attr("default");
@@ -67,7 +67,7 @@ public class ProfileManager {
         }
         //
         for (int i = 1; i < 21; i++) {
-            profiles.add(new Profile.ExternalProfile(workspace.resolve(".profile" + i), "书单" + i + "：未定义"));
+            profiles.add(new Profile.ExternalProfile(workspace.resolve(".profile" + i), "我的书单" + i + "：未定义"));
         }
         //
         return Collections.unmodifiableList(profiles);
