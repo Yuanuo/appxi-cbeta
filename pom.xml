@@ -6,7 +6,7 @@
 
     <groupId>org.appxi</groupId>
     <artifactId>cbeta</artifactId>
-    <version>23.11.22</version>
+    <version>24.02.16</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

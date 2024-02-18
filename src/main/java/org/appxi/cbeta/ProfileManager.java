@@ -1,7 +1,6 @@
 package org.appxi.cbeta;
 
 import org.appxi.prefs.Preferences;
-import org.appxi.util.StringHelper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,7 +49,7 @@ public class ProfileManager {
                 for (Element navlink : nav.select(":root > navlink, :root > li > navlink")) {
                     final String filename = navlink.attr("href");
                     final String id = filename.substring(0, filename.length() - 10); // 10 for "_nav.xhtml"
-                    final String repo = StringHelper.indexOf(id, "bulei", "simple", "advance") ? ".profile0" : (".profile." + id);
+                    final String repo = ".profile." + id;
                     profiles.add(new Profile.InternalProfile(id, navlink.text(), "", version, workspace.resolve(repo), filename));
                 }
                 //
