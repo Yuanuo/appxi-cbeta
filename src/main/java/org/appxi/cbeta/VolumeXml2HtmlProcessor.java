@@ -104,7 +104,9 @@ public class VolumeXml2HtmlProcessor extends FilteredProcessor<Element> {
                     return FilterResult.SKIP_ENTIRELY; // not support now
                 }
                 if (ele.hasAttr("type")) {
-                    addBuff("span", ele).addClass(ele.attr("type"))
+                    String _tmp = ele.attr("type");
+                    addBuff("span", ele).addClass(_tmp)
+                            .addClass("add".equals(_tmp) ? "mod" : "")
                             .attr("data-n", ele.attr("n"))
                             .attr("data-t", volDocument.getElementText(ele));
                     return FilterResult.SKIP_ENTIRELY;
