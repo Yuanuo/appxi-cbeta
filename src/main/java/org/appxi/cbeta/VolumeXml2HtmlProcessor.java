@@ -9,11 +9,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class VolumeXml2HtmlProcessor extends FilteredProcessor<Element> {
     public final VolumeDocument volDocument;
+    private final String library;
     private Element body;
     private Element buff;
 
@@ -24,6 +26,7 @@ public class VolumeXml2HtmlProcessor extends FilteredProcessor<Element> {
     public VolumeXml2HtmlProcessor(VolumeDocument volDocument, LinkedXmlFilter linkedFilter) {
         super(linkedFilter);
         this.volDocument = volDocument;
+        this.library = volDocument.book.library;
         reset();
     }
 
@@ -87,7 +90,9 @@ public class VolumeXml2HtmlProcessor extends FilteredProcessor<Element> {
                 newBuff("span", ele);
                 break;
             case "lb", "pb":
-                addBuff("span", ele).attr("id", StringHelper.concat('p', ele.attr("n")));
+                if (ele.attrIs("ed", library)) {
+                    addBuff("span", ele).attr("id", StringHelper.concat('p', ele.attr("n")));
+                }
                 return FilterResult.SKIP_ENTIRELY;
             case "g":
                 String gTxt = volDocument.getDeclarationText(ele.attr("ref"));
