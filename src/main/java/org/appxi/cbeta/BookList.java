@@ -117,10 +117,23 @@ public abstract class BookList<T> {
             book.authorInfo = item.attr("a");
             book.library = link.substring(2, link.indexOf('/', 2));
             booksMap.data().put(book.id, book);
+        } else if (link.startsWith("help/other/")) {
+            book = booksMap.ofBook();
+            final String linkText = item.text();
+            book.id = item.attrOr("i", () -> DigestHelper.crc32c(link + linkText));
+            book.title = linkText;
+            book.path = link;
+            //
+            book.library = link.substring(11, link.indexOf('/', 11));
+            if (book.library.length() > 2) {
+                book.library = link.substring(link.lastIndexOf('/') + 1).replaceAll("(\\d|-).*", "").toUpperCase();
+            }
+            booksMap.data().put(book.id, book);
         } else {
             book = booksMap.ofBook();
-            book.id = item.attrOr("i", () -> DigestHelper.crc32c(link));
-            book.title = item.text();
+            final String linkText = item.text();
+            book.id = item.attrOr("i", () -> DigestHelper.crc32c(link + linkText));
+            book.title = linkText;
             book.path = link;
             booksMap.data().put(book.id, book);
         }
