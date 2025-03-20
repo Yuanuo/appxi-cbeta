@@ -4,9 +4,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class BookcaseInZip implements Bookcase {
@@ -15,7 +18,15 @@ public class BookcaseInZip implements Bookcase {
 
     public BookcaseInZip(String zip) throws Exception {
         Document document = null;
-        this.zipFile = new ZipFile(zip);
+        ZipFile tmpZipFile;
+        try {
+            tmpZipFile = new ZipFile(zip);
+        } catch (ZipException e) {
+            tmpZipFile = new ZipFile(zip, Charset.forName("GBK"));
+        } catch (IOException e) {
+            throw e;
+        }
+        this.zipFile = tmpZipFile;
         ZipEntry xmlFile = getEntry("index.xml");
         if (null != xmlFile && !xmlFile.isDirectory())
             document = Jsoup.parse(zipFile.getInputStream(xmlFile), StandardCharsets.UTF_8.name(), "/", Parser.xmlParser());
