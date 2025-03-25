@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,6 +118,11 @@ public abstract class BookList<T> {
             book.authorInfo = item.attr("a");
             book.library = link.substring(2, link.indexOf('/', 2));
             booksMap.data().put(book.id, book);
+            //
+            String str = item.attr("p");
+            if (!str.isBlank()) {
+                Collections.addAll(book.periods, str.split(","));
+            }
         } else if (link.startsWith("help/other/")) {
             book = booksMap.ofBook();
             final String linkText = item.text();
