@@ -74,8 +74,7 @@ public class BookcaseInZip implements Bookcase {
         try {
             return this.zipFile.getInputStream(getEntry(path));
         } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
+            return EMPTY_BYTE_ARRAY_INPUT_STREAM;
         }
     }
 }

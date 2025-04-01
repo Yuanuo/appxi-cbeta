@@ -81,7 +81,6 @@ public class BookcaseInDir implements Bookcase {
             long time = Files.getLastModifiedTime(this.directory.resolve(path)).toMillis();
             return time - time % 1000;
         } catch (Exception e) {
-            e.printStackTrace();
             return 0;
         }
     }
@@ -91,8 +90,7 @@ public class BookcaseInDir implements Bookcase {
         try {
             return Files.newInputStream(this.directory.resolve(path));
         } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
+            return EMPTY_BYTE_ARRAY_INPUT_STREAM;
         }
     }
 }

@@ -7,10 +7,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public interface Bookcase {
+    ByteArrayInputStream EMPTY_BYTE_ARRAY_INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
+
     String getPath();
 
     Document getIndexDocument();
