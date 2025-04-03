@@ -119,6 +119,9 @@ public abstract class BookList<T> {
             book.library = link.substring(2, link.indexOf('/', 2));
             booksMap.data().put(book.id, book);
             //
+            if (!book.authorInfo.isBlank()) {
+                Collections.addAll(book.authors, book.authorInfo.split(","));
+            }
             String str = item.attr("p");
             if (!str.isBlank()) {
                 Collections.addAll(book.periods, str.split(","));
