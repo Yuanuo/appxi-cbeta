@@ -93,7 +93,7 @@ public abstract class BookList<T> {
         Book book;
         if (link.isEmpty()) {
             book = bookMap.ofBook();
-            book.id = item.attrOr("i", (String) null);
+            book.id = item.attrOr("i", () -> null);
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
         } else if (link.startsWith("toc/")) {
             book = bookMap.data().get(item.attr("i"));
@@ -112,7 +112,14 @@ public abstract class BookList<T> {
             }
         } else if (link.startsWith("a/")) {
             book = bookMap.ofBook();
-            book.id = item.attrOr("i", () -> link.substring(link.lastIndexOf('/') + 1, link.lastIndexOf('.')));
+            book.id = item.attrOr("i", () -> {
+                String fileVend = link.substring(2, link.indexOf('/', 2));
+                String fileName = link.substring(link.lastIndexOf('/') + 1);
+                if (fileName.startsWith(fileVend)) {
+                    return fileName.substring(0, fileName.lastIndexOf('.'));
+                }
+                return DigestHelper.crc32c(link);
+            });
             book.title = item.text();
             book.path = link;
             book.authorInfo = item.attr("a");
