@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class BookList<T> {
-    protected final BookMap booksMap;
+    protected final BookMap bookMap;
     protected final T data;
     private final InputStream closableInputStream;
 
     private HanLang hanLang = HanLang.hantTW;
 
     public BookList(BookMap bookMap, T data, InputStream closableInputStream) {
-        this.booksMap = bookMap;
+        this.bookMap = bookMap;
         this.data = data;
         this.closableInputStream = Objects.requireNonNull(closableInputStream);
     }
@@ -92,17 +92,17 @@ public abstract class BookList<T> {
 
         Book book;
         if (link.isEmpty()) {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             book.id = item.attrOr("i", (String) null);
             book.title = item.attrOr("t", () -> BookHelper.parseNavCatalogInfo(item.text()));
         } else if (link.startsWith("toc/")) {
-            book = booksMap.data().get(item.attr("i"));
+            book = bookMap.data().get(item.attr("i"));
         } else if (link.startsWith("XML/")) {
             final String text = item.text();
             final String[] tmpArr = text.split("[ 　]", 2);
-            book = booksMap.data().get(tmpArr[0]);
+            book = bookMap.data().get(tmpArr[0]);
             if (null == book && tmpArr[0].matches(".*[a-z]$")) {
-                book = booksMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
+                book = bookMap.data().get(tmpArr[0].substring(0, tmpArr[0].length() - 1));
                 if (null != book) {
                     book.attr("cloned", true);
                     book = book.clone();
@@ -111,13 +111,13 @@ public abstract class BookList<T> {
                 }
             }
         } else if (link.startsWith("a/")) {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             book.id = item.attrOr("i", () -> link.substring(link.lastIndexOf('/') + 1, link.lastIndexOf('.')));
             book.title = item.text();
             book.path = link;
             book.authorInfo = item.attr("a");
             book.library = link.substring(2, link.indexOf('/', 2));
-            booksMap.data().put(book.id, book);
+            bookMap.data().put(book.id, book);
             //
             if (!book.authorInfo.isBlank()) {
                 Collections.addAll(book.authors, book.authorInfo.split(","));
@@ -127,7 +127,7 @@ public abstract class BookList<T> {
                 Collections.addAll(book.periods, str.split(","));
             }
         } else if (link.startsWith("help/other/")) {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             final String linkText = item.text();
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link + linkText));
             book.title = linkText;
@@ -137,14 +137,14 @@ public abstract class BookList<T> {
             if (book.library.length() > 2) {
                 book.library = link.substring(link.lastIndexOf('/') + 1).replaceAll("(\\d|-).*", "").toUpperCase();
             }
-            booksMap.data().put(book.id, book);
+            bookMap.data().put(book.id, book);
         } else {
-            book = booksMap.ofBook();
+            book = bookMap.ofBook();
             final String linkText = item.text();
             book.id = item.attrOr("i", () -> DigestHelper.crc32c(link + linkText));
             book.title = linkText;
             book.path = link;
-            booksMap.data().put(book.id, book);
+            bookMap.data().put(book.id, book);
         }
         if (null == book) return null;
         return this.createTreeItem(item, book);
