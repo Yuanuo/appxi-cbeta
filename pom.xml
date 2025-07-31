@@ -6,7 +6,7 @@
 
     <groupId>org.appxi</groupId>
     <artifactId>cbeta</artifactId>
-    <version>25.04.03</version>
+    <version>25.07.29</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>[1.17.2,)</version>
+            <version>1.19.2</version>
         </dependency>
     </dependencies>
     <build>
